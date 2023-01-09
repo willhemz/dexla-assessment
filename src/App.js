@@ -11,9 +11,10 @@ const App = () => {
 
   // SET VIEW TO FALSE AFTER 8s IDLE TIME
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       if (view) setView(false)
     }, 8000)
+    return () => clearTimeout(timeout)
   }, [view])
 
   // HANDLE STATE FUNCTION
