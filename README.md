@@ -40,3 +40,15 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
+
+## How it works
+
+A loader displays onload as a GET request is made to the server using the FIGMA API link provided.
+
+Upon successful request, a button displays on the screen.
+
+A click on the button displays the DIV (ASSET FRAME).
+
+A click on the frame returns the button.
+
+If the frame displays for 8s, it automatically returns to the button.
