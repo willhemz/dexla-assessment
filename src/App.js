@@ -1,8 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import Vector from './asset/Vector.png'
 
-const url =
-  'https://s3.us-west-2.amazonaws.com/secure.notion-static.com/5f4ffc66-324b-4560-9ef9-34f12c06a4c0/Figma-Candidate-Test.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230109%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230109T132924Z&X-Amz-Expires=86400&X-Amz-Signature=4af4761653f335433364075a2141e729d66f7895e72cfee83ed4d81591d34752&X-Amz-SignedHeaders=host&response-content-disposition=filename%3D%22Figma-Candidate-Test.json%22&x-id=GetObject'
+const url = 'https://api.figma.com/v1/files/vRCqsniN1t2PndqlKeYQwI'
+
+const myHeaders = new Headers()
+myHeaders.append(
+  'X-Figma-Token',
+  'figd_dN1neMPKHHmnDFU4AFlSMPwv6ZqLqK_ANxk7hj3l'
+)
+
+const requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow',
+}
 
 const App = () => {
   // STATE CONDITIONS
@@ -17,6 +28,9 @@ const App = () => {
     return () => clearTimeout(timeout)
   }, [view])
 
+  // Default rgb value
+  const c = 255
+
   // HANDLE STATE FUNCTION
   const handleState = (x, y, z) => {
     setState({ loading: x, error: y, data: z })
@@ -26,7 +40,7 @@ const App = () => {
   const fetchData = useCallback(async () => {
     handleState(true, false, {})
     try {
-      const response = await fetch(url)
+      const response = await fetch(url, requestOptions)
       if (response.status >= 200 && response.status <= 299) {
         const val = await response.json()
         const { document, styles, thumbnailUrl, version } = val
@@ -41,6 +55,7 @@ const App = () => {
       } else handleState(false, true, {})
     } catch (error) {
       console.log(error)
+      handleState(false, true, {})
     }
   }, [])
 
@@ -82,16 +97,28 @@ const App = () => {
     absoluteBoundingBox: size,
     cornerRadius,
     strokeWeight,
+    backgroundColor: bcg,
+    strokes,
   } = children.reduce((item) => {
     return { ...item }
   })
 
+  const { color, type } = strokes.reduce((item) => {
+    return { ...item }
+  })
+
+  // ASSET ICON/PORTFOLIO
   const icon = obj
     .filter((item) => item.id === '1:11')
     .reduce((item) => {
       return { ...item }
     })
 
+  const iconImage = icon.children.reduce((item) => {
+    return { ...item }
+  })
+
+  // ASSET FRAME 307
   const frame = obj
     .filter((item) => item.id === '1:14')
     .reduce((item) => {
@@ -103,9 +130,7 @@ const App = () => {
     <main
       className='container'
       style={{
-        backgroundColor: `rgba(${bg.r * 255},${bg.g * 255},${bg.b * 255}, ${
-          bg.a
-        })`,
+        backgroundColor: `rgba(${bg.r * c},${bg.g * c},${bg.b * c}, ${bg.a})`,
       }}>
       <button
         onClick={() => setView(true)}
@@ -121,10 +146,10 @@ const App = () => {
             width: `${size.width}px`,
             height: `${size.height}px`,
             borderRadius: `${cornerRadius}px`,
-            border: `${strokeWeight}px solid rgba(${0.800000011920929 * 255}, ${
-              0.800000011920929 * 255
-            }, ${0.800000011920929 * 255},1)`,
-            background: 'rgba(255,255,255,1)',
+            border: `${strokeWeight}px ${type} rgba(${color.r * c}, ${
+              color.g * c
+            }, ${color.b * c},${color.a})`,
+            background: `rgba(${bcg.r * c},${bcg.g * c},${bcg.b * c},${bcg.a})`,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -134,20 +159,20 @@ const App = () => {
           <div
             style={{
               width: `${icon.absoluteBoundingBox.width}px`,
-              aspectRatio: 1,
-              background: `rgba(${0.95686274766922 * 255}, ${
-                0.9803921580314636 * 255
-              }, ${0.9803921580314636 * 255},1)`,
+              height: `${icon.absoluteBoundingBox.height}px`,
+              background: `rgba(${icon.backgroundColor.r * c}, ${
+                icon.backgroundColor.g * c
+              }, ${icon.backgroundColor.b * c}, ${icon.backgroundColor.a})`,
               borderRadius: `${icon.cornerRadius}px`,
-              border: `${icon.strokeWeight}px solid rgba(${
-                0.95686274766922 * 255
-              }, ${0.9803921580314636 * 255}, ${0.9803921580314636 * 255},1)`,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
             }}>
             <img
-              style={{ width: '24px', height: '24px' }}
+              style={{
+                width: `${iconImage.absoluteBoundingBox.width}px`,
+                height: `${iconImage.absoluteBoundingBox.height}px`,
+              }}
               src={Vector}
               alt='vector'
             />
@@ -159,25 +184,25 @@ const App = () => {
               justifyContent: 'center',
               alignItems: 'center',
               gap: '8px',
-              width: '232px',
-              height: '50px',
+              width: `${frame.absoluteBoundingBox.width}px`,
+              height: `${frame.absoluteBoundingBox.height}px`,
+              backgroundColor: `rgba(${frame.backgroundColor.r * c}, ${
+                frame.backgroundColor.g * c
+              }, ${frame.backgroundColor.b * c},${frame.backgroundColor.a})`,
             }}>
             {frame.children.map((item) => {
               return (
                 <p
-                  style={
-                    item.id === '1:15'
-                      ? {
-                          color: `rgba(${0.07058823853731155 * 255}, ${
-                            0.07058823853731155 * 255
-                          }, ${0.07058823853731155 * 255}, 1)`,
-                        }
-                      : {
-                          color: `rgba(${0.4627451002597809 * 255}, ${
-                            0.4588235318660736 * 255
-                          }, ${0.48235294222831726 * 255}, 1)`,
-                        }
-                  }
+                  style={{
+                    fontFamily: `${item.style.fontFamily}, 'Trebuchet MS'`,
+                    fontSize: `${item.style.fontSize}px`,
+                    fontWeight: `${item.style.fontWeight}`,
+                    letterSpacing: `${item.style.letterSpacing}px`,
+                    lineHeight: `${item.style.lineHeightPx}px`,
+                    height: `${item.absoluteBoundingBox.height}px`,
+                    width: `${item.absoluteBoundingBox.width}px`,
+                    textAlign: `${item.style.textAlignHorizontal}`,
+                  }}
                   className='text'
                   key={item.id}>
                   {item.name}
