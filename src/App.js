@@ -147,13 +147,11 @@ const App = () => {
               break
 
             case undefined || null || '':
-              frame = item.reduce((val) => {
-                return { ...item }
-              })
+              frame = null
               break
 
             default:
-              frame = null
+              frame = item
               break
           }
 
