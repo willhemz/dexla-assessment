@@ -45,10 +45,8 @@ You may also see any lint errors in the console.
 
 A loader displays onload as a GET request is made to the server using the FIGMA API link provided.
 
-Upon successful request, a button displays on the screen.
+Upon successful request, the component renders as a `DIV`.
 
-A click on the button displays the DIV (ASSET FRAME).
+A click on the DIV COMPONENT render the component as a `BUTTON` and vice versa .
 
-A click on the frame returns the button.
-
-If the frame displays for 8s, it automatically returns to the button.
+If one of the destructured item returns an Array instead of an object, the component renders as a `BUTTON` with a warning instruction displaying on screen for 5seconds.
