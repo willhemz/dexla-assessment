@@ -163,7 +163,7 @@ const App = () => {
               return { ...item }
             })
             return (
-              <di
+              <div
                 key={item.id}
                 style={{
                   width: `${frame.absoluteBoundingBox.width}px`,
@@ -190,7 +190,7 @@ const App = () => {
                   src={Vector}
                   alt='vector'
                 />
-              </di>
+              </div>
             )
           }
           if (item.id === '1:14') {
